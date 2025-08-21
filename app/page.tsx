@@ -1,103 +1,197 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useEffect, useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
+
+export default function ParallaxStacking() {
+  const heroRef = useRef<HTMLDivElement>(null)
+  const sectionInterRef = useRef<HTMLDivElement>(null)
+  const section2Ref = useRef<HTMLDivElement>(null)
+  const section3Ref = useRef<HTMLDivElement>(null)
+
+  const backgrounds = [
+    {
+      src: "/letras_1.svg",
+      opacity: 0.2,
+      position: "center",
+      size: "contain",
+    },
+  ]
+  
+  const [fadeI, setFadeI] = useState(1)
+  const [fade2, setFade2] = useState(1)
+  const [fade3, setFade3] = useState(1)
+  const [bgSrc, setBgSrc] = useState(backgrounds[0]) // Fondo inicial
+
+  useEffect(() => {
+    
+    
+    const handleScroll = () => {
+      const winH = window.innerHeight
+
+      // Fade sección inter
+      if (sectionInterRef.current) {
+        const rect = sectionInterRef.current.getBoundingClientRect()
+        let opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        setFadeI(Math.max(0, Math.min(1, opacity)))
+        if (opacity > 0.5) setBgSrc(backgrounds[0])
+      }
+
+      // Fade sección 2
+      if (section2Ref.current) {
+        const rect = section2Ref.current.getBoundingClientRect()
+        let opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        setFade2(Math.max(0, Math.min(1, opacity)))
+        if (opacity > 0.5) setBgSrc(backgrounds[0])
+      }
+
+      // Fade sección 3
+      if (section3Ref.current) {
+        const rect = section3Ref.current.getBoundingClientRect()
+        let opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        setFade3(Math.max(0, Math.min(1, opacity)))
+        if (opacity > 0.5) setBgSrc(backgrounds[0])
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="w-full relative">
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* -------- Hero (Sección 1) -------- */}
+      <div
+        ref={heroRef}
+        className="fixed inset-0 z-0"
+      >
+        <img
+          src="/Arte-Corona.svg"
+          alt="Hero Background"
+          className="object-cover w-[100vw] h-[100vh] absolute top-1/2 left-1/2 transform -translate-x-1/2 
+          -translate-y-1/2 opacity-20"
+        />
+      </div>
+      
+      {/* Fondo dinámico */}
+      <div
+        className="fixed inset-0 z-0 transition-all duration-500 object-cover w-full h-full"
+        style={{
+          backgroundImage: `url(${bgSrc.src})`,
+          backgroundPosition: bgSrc.position,
+          backgroundSize: bgSrc.size,
+          backgroundRepeat: "no-repeat",
+          opacity: bgSrc.opacity,
+          pointerEvents: "none",
+        }}
+      ></div>
+
+      {/* -------- Secciones 1 a 4 -------- */}
+      <section
+        ref={sectionInterRef}
+        className="h-screen relative z-10 flex items-center justify-center"
+        style={{
+          opacity: fadeI,
+          transform: `scale(${0.9 + fadeI * 0.1})`,
+          transition: "opacity 0.2s linear, transform 0.2s linear",
+        }}
+      ></section>
+
+      <section
+        ref={section2Ref}
+        className="h-screen relative z-10 flex items-center justify-center"
+        style={{
+          transform: `scale(${0.9 + fade2 * 0.1})`,
+          transition: "transform 0.1s ease-in-out",
+        }}
+      >
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90"
+          style={{
+            opacity: 1,
+            transition: "opacity 0.05s ease-in",
+            zIndex: -1,
+          }}
+        ></div>
+        <div className="max-w-2xl px-6 text-center text-white p-10 rounded-xl">
+          <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
+            Información del Evento
+          </h2>
+          <p className="text-lg leading-relaxed mb-4">
+            Únete a nosotros del <strong>15 al 17 de junio de 2025</strong> en el
+            Centro de Convenciones. Tres días diseñados para fortalecer tu fe y
+            conectarte con jóvenes de todo el mundo.
+          </p>
+          <p className="text-lg leading-relaxed">
+            El evento incluye conferencias, talleres y momentos de adoración
+            centrados en Cristo.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      <section
+        ref={section3Ref}
+        className="h-screen relative z-20 flex flex-col justify-center items-center text-center px-6"
+        style={{
+          transform: `scale(${0.9 + fade3 * 0.1})`,
+          transition: "opacity 0.2s linear, transform 0.2s linear",
+        }}
+      >
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90"
+          style={{
+            opacity: 1,
+            transition: "opacity 0.05s ease-in",
+            zIndex: -1,
+          }}
+        ></div>
+        <div className="relative z-10">
+          <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
+            Programa del Congreso
+          </h2>
+          <p className="text-white text-lg max-w-2xl mb-8">
+            Cada día tiene un enfoque especial: desde recordar el sacrificio de
+            Jesús hasta vivir en Su memoria.
+          </p>
+          <Button className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md">
+            Ver Programa Completo
+          </Button>
+        </div>
+      </section>
+
+      {/* -------- Sección 4 -------- */}
+      <section className="h-screen relative z-30 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90" />
+        </div>
+        <div className="relative z-10 flex flex-col justify-center items-center h-full text-center px-6">
+          <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
+            Sé Parte del Cambio
+          </h2>
+          <p className="text-white text-lg max-w-2xl mb-10">
+            Inscríbete ahora y vive una experiencia espiritual única junto a
+            miles de jóvenes.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md">
+              Inscríbete Ahora
+            </Button>
+            <Button
+              variant="outline"
+              className="border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 font-bold px-8 py-4 text-lg rounded-md"
+            >
+              Más Información
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* -------- Footer -------- */}
+      <footer className="bg-black py-20 flex items-center justify-center relative z-40">
+        <p className="text-white text-xl">Fin del contenido parallax</p>
       </footer>
-    </div>
-  );
+    </main>
+  )
 }
