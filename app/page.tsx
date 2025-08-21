@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
+import Activities from "@/components/section/activities"
 
-export default function ParallaxStacking() {
+export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
   const sectionInterRef = useRef<HTMLDivElement>(null)
   const section2Ref = useRef<HTMLDivElement>(null)
@@ -12,7 +13,7 @@ export default function ParallaxStacking() {
   const backgrounds = [
     {
       src: "/letras_1.svg",
-      opacity: 0.2,
+      opacity: 0.7,
       position: "center",
       size: "contain",
     },
@@ -101,7 +102,7 @@ export default function ParallaxStacking() {
 
       <section
         ref={section2Ref}
-        className="h-screen relative z-10 flex items-center justify-center"
+        className="h-screen relative z-10 flex items-center justify-center sm:p-12 md:p-9 lg:p-6"
         style={{
           transform: `scale(${0.9 + fade2 * 0.1})`,
           transition: "transform 0.1s ease-in-out",
@@ -115,7 +116,26 @@ export default function ParallaxStacking() {
             zIndex: -1,
           }}
         ></div>
-        <div className="max-w-2xl px-6 text-center text-white p-10 rounded-xl">
+        <Activities />
+      </section>
+
+      <section
+        ref={section3Ref}
+        className="h-screen relative z-20 flex flex-col justify-center items-center text-center px-6"
+        style={{
+          transform: `scale(${0.9 + fade3 * 0.1})`,
+          transition: "opacity 0.2s linear, transform 0.2s linear",
+        }}
+      >
+         <div
+          className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90"
+          style={{
+            opacity: 1,
+            transition: "opacity 0.05s ease-in",
+            zIndex: -1,
+          }}
+        ></div>
+         <div className="max-w-2xl px-6 text-center text-white p-10 rounded-xl">
           <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
             Información del Evento
           </h2>
@@ -128,36 +148,6 @@ export default function ParallaxStacking() {
             El evento incluye conferencias, talleres y momentos de adoración
             centrados en Cristo.
           </p>
-        </div>
-      </section>
-
-      <section
-        ref={section3Ref}
-        className="h-screen relative z-20 flex flex-col justify-center items-center text-center px-6"
-        style={{
-          transform: `scale(${0.9 + fade3 * 0.1})`,
-          transition: "opacity 0.2s linear, transform 0.2s linear",
-        }}
-      >
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90"
-          style={{
-            opacity: 1,
-            transition: "opacity 0.05s ease-in",
-            zIndex: -1,
-          }}
-        ></div>
-        <div className="relative z-10">
-          <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
-            Programa del Congreso
-          </h2>
-          <p className="text-white text-lg max-w-2xl mb-8">
-            Cada día tiene un enfoque especial: desde recordar el sacrificio de
-            Jesús hasta vivir en Su memoria.
-          </p>
-          <Button className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md">
-            Ver Programa Completo
-          </Button>
         </div>
       </section>
 
