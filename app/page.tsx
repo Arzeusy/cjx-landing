@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Activities from "@/components/section/activities"
+import SpeakersSection from "@/components/section/speakers"
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -135,20 +136,7 @@ export default function Home() {
             zIndex: -1,
           }}
         ></div>
-         <div className="max-w-2xl px-6 text-center text-white p-10 rounded-xl">
-          <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
-            Información del Evento
-          </h2>
-          <p className="text-lg leading-relaxed mb-4">
-            Únete a nosotros del <strong>15 al 17 de junio de 2025</strong> en el
-            Centro de Convenciones. Tres días diseñados para fortalecer tu fe y
-            conectarte con jóvenes de todo el mundo.
-          </p>
-          <p className="text-lg leading-relaxed">
-            El evento incluye conferencias, talleres y momentos de adoración
-            centrados en Cristo.
-          </p>
-        </div>
+        <SpeakersSection />
       </section>
 
       {/* -------- Sección 4 -------- */}
