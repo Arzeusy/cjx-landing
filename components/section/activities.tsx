@@ -25,9 +25,20 @@ export default function Activities() {
           <span className="text-white text-lg max-w-2xl mb-8 block">
             👥 Participación: Por equipos
           </span>
-          <Button className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md">
+         
+          <Button
+            asChild
+            className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md"
+          >
+            <a
+              href="https://wa.me/50242624514?text=Quiero%20inscribir%20a%20mi%20equipo%20en%20el%20bibliaton"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Inscribe a tu equipo
+            </a>
           </Button>
+
         </div>
 
         {/* Imagen */}
