@@ -34,7 +34,7 @@ export default function Home() {
       // Fade sección inter
       if (sectionInterRef.current) {
         const rect = sectionInterRef.current.getBoundingClientRect()
-        let opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        const opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
         setFadeI(Math.max(0, Math.min(1, opacity)))
         if (opacity > 0.5) setBgSrc(backgrounds[0])
       }
@@ -42,17 +42,17 @@ export default function Home() {
       // Fade sección 2
       if (section2Ref.current) {
         const rect = section2Ref.current.getBoundingClientRect()
-        let opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
-        setFade2(Math.max(0, Math.min(1, opacity)))
-        if (opacity > 0.5) setBgSrc(backgrounds[0])
+        const opacity2 = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        setFade2(Math.max(0, Math.min(1, opacity2)))
+        if (opacity2 > 0.5) setBgSrc(backgrounds[0])
       }
 
       // Fade sección 3
       if (section3Ref.current) {
         const rect = section3Ref.current.getBoundingClientRect()
-        let opacity = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
-        setFade3(Math.max(0, Math.min(1, opacity)))
-        if (opacity > 0.5) setBgSrc(backgrounds[0])
+        const opacity3 = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        setFade3(Math.max(0, Math.min(1, opacity3)))
+        if (opacity3 > 0.5) setBgSrc(backgrounds[0])
       }
     }
 
@@ -67,12 +67,12 @@ export default function Home() {
       {/* -------- Hero (Sección 1) -------- */}
       <div
         ref={heroRef}
-        className="fixed inset-0 z-0"
+        className="fixed inset-0 z-0 w-screen h-screen"
       >
         <img
           src="/Arte-Corona.svg"
           alt="Hero Background"
-          className="object-cover w-[100vw] h-[100vh] absolute top-1/2 left-1/2 transform -translate-x-1/2 
+          className="object-cover absolute top-1/2 left-1/2 transform -translate-x-1/2 
           -translate-y-1/2 opacity-20"
         />
       </div>
