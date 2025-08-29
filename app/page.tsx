@@ -93,7 +93,7 @@ export default function Home() {
       {/* -------- Secciones 1 a 4 -------- */}
       <section
         ref={sectionInterRef}
-        className="h-screen relative z-10 flex items-center justify-center"
+        className="min-h-screen  relative z-10 flex items-center justify-center"
         style={{
           opacity: fadeI,
           transform: `scale(${0.9 + fadeI * 0.1})`,
@@ -103,7 +103,7 @@ export default function Home() {
 
       <section
         ref={section2Ref}
-        className="h-screen relative z-10 flex items-center justify-center sm:p-12 md:p-9 lg:p-6"
+        className="min-h-screen  relative z-10 flex items-center justify-center sm:p-12 md:p-9 lg:p-6"
         style={{
           transform: `scale(${0.9 + fade2 * 0.1})`,
           transition: "transform 0.1s ease-in-out",
@@ -122,7 +122,7 @@ export default function Home() {
 
       <section
         ref={section3Ref}
-        className="h-screen relative z-20 flex flex-col justify-center items-center text-center px-6"
+        className="min-h-screen  relative z-20 flex flex-col justify-center items-center text-center px-6"
         style={{
           transform: `scale(${0.9 + fade3 * 0.1})`,
           transition: "opacity 0.2s linear, transform 0.2s linear",
