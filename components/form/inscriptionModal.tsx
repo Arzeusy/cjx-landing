@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import TicketPreview from "../ui/ticketPreview"
+import { supabase } from "@/lib/supabase/supabaseClient"
 
 export type FormDataType = {
   nombre: string
@@ -45,7 +46,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
     else setFormData({ ...formData, [name]: value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.nombre || !formData.acompanantes || !formData.imagen) {
       alert("Nombre, acompañantes e imagen son obligatorios.")
@@ -55,9 +56,54 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
       alert("Debes ingresar al menos teléfono o correo.")
       return
     }
-    onSubmit(formData)
-    setOpen(false)
+    try {
+      await saveInscription(formData)
+      alert("Inscripción guardada con éxito 🎉")
+      setOpen(false)
+    } catch (err) {
+      console.error(err)
+      alert("Error al guardar la inscripción")
+    }
   }
+
+
+  async function saveInscription(data: FormDataType) {
+    let imageUrl = null
+
+    if (data.imagen) {
+      const fileExt = data.imagen.name.split(".").pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const { error: uploadError } = await supabase.storage
+        .from("comprobantes")
+        .upload(fileName, data.imagen)
+
+      if (uploadError) throw uploadError
+
+      const { data: publicUrl } = supabase
+        .storage
+        .from("comprobantes")
+        .getPublicUrl(fileName)
+
+      imageUrl = publicUrl.publicUrl
+    }
+
+    const { error } = await supabase.from("inscripciones").insert([
+      {
+        nombre: data.nombre,
+        idc: data.idc,
+        ubicacion: data.ubicacion,
+        telefono: data.telefono,
+        correo: data.correo,
+        edad: data.edad ? Number(data.edad) : null,
+        acompanantes: Number(data.acompanantes),
+        imagen_url: imageUrl,
+      },
+    ])
+
+    if (error) throw error
+  }
+
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
