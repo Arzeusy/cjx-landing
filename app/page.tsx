@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
 import Activities from "@/components/section/activities"
 import SpeakersSection from "@/components/section/speakers"
 import Hospedaje from "@/components/section/hotels"
+import InscripcionSection from "@/components/section/InscripcionSection"
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -170,35 +170,22 @@ export default function Home() {
 
 
       {/* -------- Sección lts -------- */}
-      <section className="h-screen relative z-30 overflow-hidden">
+      <section className="relative z-30 overflow-hidden "> 
+        {/* el pb-20 asegura el mismo espacio que el footer (py-20) */}
+        
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90" />
         </div>
-        <div className="relative z-10 flex flex-col justify-center items-center h-full text-center px-6">
-          <h2 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-6">
-            Sé Parte del Cambio
-          </h2>
-          <p className="text-white text-lg max-w-2xl mb-10">
-            Inscríbete ahora y vive una experiencia espiritual única junto a
-            miles de jóvenes.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md">
-              Inscríbete Ahora
-            </Button>
-            <Button
-              variant="outline"
-              className="border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 font-bold px-8 py-4 text-lg rounded-md"
-            >
-              Más Información
-            </Button>
-          </div>
+
+        {/* Contenido visible */}
+        <div className="relative z-10 pt-[14vh] pb-[20vh]">
+          <InscripcionSection />
         </div>
       </section>
 
       {/* -------- Footer -------- */}
       <footer className="bg-black py-20 flex items-center justify-center relative z-40">
-        <p className="text-white text-xl">Fin del contenido parallax</p>
+        <p className="text-white text-xl">Conferencias Juveniles | Xela</p>
       </footer>
     </main>
   )
