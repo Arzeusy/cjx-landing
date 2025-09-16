@@ -30,7 +30,8 @@ export default function Activities() {
             className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md"
           >
             <a
-              href="https://wa.me/50242624514?text=Quiero%20inscribir%20a%20mi%20equipo%20en%20el%20bibliaton"
+              // href="https://wa.me/50242624514?text=Quiero%20inscribir%20a%20mi%20equipo%20en%20el%20bibliaton"
+              href="https://docs.google.com/forms/d/e/1FAIpQLScH2gDph30_fivY5ZUESrKwhX2Ss1v6K6eXlLI916rcZSP5_Q/viewform"
               target="_blank"
               rel="noopener noreferrer"
             >

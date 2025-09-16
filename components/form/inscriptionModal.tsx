@@ -39,6 +39,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
 
   // Estado para manejar vista en móvil
   const [showPreview, setShowPreview] = useState(false)
+  const [ticketNumber, setTicketNumber] = useState<number>(0)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target
@@ -57,9 +58,11 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
       return
     }
     try {
-      await saveInscription(formData)
+      const newId = await saveInscription(formData)
       alert("Inscripción guardada con éxito 🎉")
-      setOpen(false)
+      // setOpen(false)
+      setTicketNumber(newId);
+      setShowPreview(true);
     } catch (err) {
       console.error(err)
       alert("Error al guardar la inscripción")
@@ -87,7 +90,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
       imageUrl = publicUrl.publicUrl
     }
 
-    const { error } = await supabase.from("inscripciones").insert([
+    const { data: insertedData, error } = await supabase.from("inscripciones").insert([
       {
         nombre: data.nombre,
         idc: data.idc,
@@ -98,9 +101,11 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
         acompanantes: Number(data.acompanantes),
         imagen_url: imageUrl,
       },
-    ])
+    ]).select("id").single() ;
+
 
     if (error) throw error
+    else return insertedData.id;
   }
 
 
@@ -116,23 +121,26 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
           </DialogTitle>
         </DialogHeader>
 
-
-          <div className="flex justify-between mb-4">
-            <Button
-              type="button"
-              variant={!showPreview ? "default" : "outline"}
-              onClick={() => setShowPreview(false)}
-            >
-              Formulario
-            </Button>
-            <Button
-              type="button"
-              variant={showPreview ? "default" : "outline"}
-              onClick={() => setShowPreview(true)}
-            >
-              Ver Ticket
-            </Button>
-          </div>
+          {
+           ticketNumber == 0 && (
+              <div className="flex justify-between mb-4">
+                <Button
+                  type="button"
+                  variant={!showPreview ? "default" : "outline"}
+                  onClick={() => setShowPreview(false)}
+                >
+                  Formulario
+                </Button>
+                <Button
+                  type="button"
+                  variant={showPreview ? "default" : "outline"}
+                  onClick={() => setShowPreview(true)}
+                >
+                  Ver Ticket
+                </Button>
+              </div>
+            )
+          }
 
           {!showPreview ? (
            <form onSubmit={handleSubmit} className="space-y-4">
@@ -154,7 +162,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
               <Input
                 id="idc"
                 name="idc"
-                placeholder="Ej: 123456"
+                placeholder="Ej: Olintepeque"
                 value={formData.idc}
                 onChange={handleChange}
                 className="border border-gray-300"
@@ -249,7 +257,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
 
           ) : (
             <div className="min-w-[462px] min-h-[254px] mx-auto">
-              <TicketPreview formData={formData} />
+              <TicketPreview formData={formData} ticketNumber={ticketNumber > 0 ? ticketNumber.toString(): ""} />
             </div>
           )}
       </DialogContent>
