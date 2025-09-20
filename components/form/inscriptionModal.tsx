@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import TicketPreview from "../ui/ticketPreview"
 import { supabase } from "@/lib/supabase/supabaseClient"
-
+import { toast } from "sonner"
+import { Download} from "lucide-react";
 export type FormDataType = {
   nombre: string
   idc: string
@@ -25,21 +26,30 @@ type Props = {
   onSubmit: (data: FormDataType) => void
 }
 
+const initialFormData: FormDataType = {
+  nombre: "",
+  idc: "",
+  ubicacion: "",
+  telefono: "",
+  correo: "",
+  edad: "",
+  acompanantes: "",
+  imagen: null,
+}
+
 export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
-  const [formData, setFormData] = useState<FormDataType>({
-    nombre: "",
-    idc: "",
-    ubicacion: "",
-    telefono: "",
-    correo: "",
-    edad: "",
-    acompanantes: "",
-    imagen: null,
-  })
+  const [formData, setFormData] = useState<FormDataType>(initialFormData)
 
   // Estado para manejar vista en móvil
   const [showPreview, setShowPreview] = useState(false)
   const [ticketNumber, setTicketNumber] = useState<number>(0)
+
+  const handleReset = () => {
+    setFormData(initialFormData)
+    setTicketNumber(0)
+    setShowPreview(false)
+  }
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target
@@ -50,22 +60,22 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.nombre || !formData.acompanantes || !formData.imagen) {
-      alert("Nombre, acompañantes e imagen son obligatorios.")
+      toast.info("Nombre, acompañantes e imagen son obligatorios.")
       return
     }
     if (!formData.telefono && !formData.correo) {
-      alert("Debes ingresar al menos teléfono o correo.")
+      toast.info("Debes ingresar al menos teléfono o correo.")
       return
     }
     try {
       const newId = await saveInscription(formData)
-      alert("Inscripción guardada con éxito 🎉")
+      toast.success("Inscripción guardada con éxito 🎉")
       // setOpen(false)
       setTicketNumber(newId);
       setShowPreview(true);
     } catch (err) {
       console.error(err)
-      alert("Error al guardar la inscripción")
+      toast.error("Error al guardar la inscripción. Intenta de nuevo.")
     }
   }
 
@@ -109,21 +119,26 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
   }
 
 
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-          className="w-auto max-w-full sm:max-w-fit rounded-xl shadow-xl border border-yellow-500"
+          // className="w-auto max-w-full sm:max-w-fit rounded-xl shadow-xl border border-yellow-500"
+              className="
+    fixed inset-0 w-full h-full rounded-none translate-x-0 translate-y-0 max-w-full p-2
+    sm:inset-auto sm:w-full sm:max-w-lg sm:h-auto sm:rounded-xl
+    sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
+    border border-yellow-500 shadow-xl
+  "
         >
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-yellow-600">
+        <DialogHeader >
+            <DialogTitle className="text-2xl font-bold text-yellow-600 w-full text-center">
             Formulario de Inscripción
           </DialogTitle>
         </DialogHeader>
 
           {
            ticketNumber == 0 && (
-              <div className="flex justify-between mb-4">
+              <div className="flex  flex-col  justify-center  sm:justify-between sm:flex-row  mb-4 gap-4">
                 <Button
                   type="button"
                   variant={!showPreview ? "default" : "outline"}
@@ -256,8 +271,8 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
           </form>
 
           ) : (
-            <div className="min-w-[462px] min-h-[254px] mx-auto">
-              <TicketPreview formData={formData} ticketNumber={ticketNumber > 0 ? ticketNumber.toString(): ""} />
+            <div className="w-full min-h-[254px] mx-auto">
+              <TicketPreview formData={formData} handleReset={handleReset} ticketNumber={ticketNumber > 0 ? ticketNumber.toString(): ""} />
             </div>
           )}
       </DialogContent>

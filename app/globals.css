@@ -134,3 +134,21 @@ html, body {
 html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
+
+@media (max-width: 520px) {
+  .ticket-container {
+    transform: rotate(90deg);
+    transform-origin: center center; /* centra la rotación */
+    width: 90vw; /* ajusta al ancho de la pantalla */
+    height: auto; /* mantiene la altura proporcional */
+    max-width: 100%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.ticket-container {
+  width: 100%;
+  transition: transform 0.3s ease;
+}
