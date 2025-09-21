@@ -247,6 +247,9 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
                 required
                 className="border border-gray-300"
               />
+              <Label htmlFor="total" className=" text-yellow-600 text-sm">
+                {formData.acompanantes && `Total de: ${(Number(formData.acompanantes) + 1) * 150}.00`}
+              </Label>
             </div>
 
             <div>
