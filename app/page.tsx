@@ -5,6 +5,7 @@ import Activities from "@/components/section/activities"
 import SpeakersSection from "@/components/section/speakers"
 import Hospedaje from "@/components/section/hotels"
 import InscripcionSection from "@/components/section/InscripcionSection"
+import Footer from "@/components/section/footer"
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -184,9 +185,7 @@ export default function Home() {
       </section>
 
       {/* -------- Footer -------- */}
-      <footer className="bg-black py-20 flex items-center justify-center relative z-40">
-        <p className="text-white text-xl">Conferencias Juveniles | Xela</p>
-      </footer>
+      <Footer />
     </main>
   )
 }
