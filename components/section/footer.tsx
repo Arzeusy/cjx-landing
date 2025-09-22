@@ -35,7 +35,7 @@ export default function Footer() {
       {/* ===== Mobile (≤ 600px) ===== */}
       <footer className="sm:hidden bg-black py-10 flex justify-center relative z-40">
          <Carousel
-            className="w-full max-w-xs"
+            className="w-fit max-w-xs"
             plugins={[
                 Autoplay({
                     delay: 3000, // 3 segundos entre slides
@@ -52,15 +52,15 @@ export default function Footer() {
             </CarouselItem>
             <CarouselItem className="flex justify-center">
               <p className="text-white text-xl text-center px-4">
-                Conferencias Juveniles | Xela
+                Conferencias Juveniles <br/> Xela
               </p>
             </CarouselItem>
             <CarouselItem className="flex justify-center">
               <Image src="/TrueKingdom.svg" alt="" width={80} height={80}  className="h-15 w-auto"/>
             </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious className="text-white" />
-          <CarouselNext className="text-white" />
+            </CarouselContent>
+            <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2 text-white" />
+            <CarouselNext className="right-2 top-1/2 -translate-y-1/2 text-white" />
         </Carousel>
       </footer>
     </>
