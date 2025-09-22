@@ -124,11 +124,11 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
       <DialogContent
           // className="w-auto max-w-full sm:max-w-fit rounded-xl shadow-xl border border-yellow-500"
               className="
-    fixed inset-0 w-full h-full rounded-none translate-x-0 translate-y-0 max-w-full p-2
-    sm:inset-auto sm:w-full sm:max-w-lg sm:h-auto sm:rounded-xl
-    sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
-    border border-yellow-500 shadow-xl
-  "
+                fixed inset-0 w-full h-full rounded-none translate-x-0 translate-y-0 max-w-full p-2
+                sm:inset-auto sm:w-full sm:max-w-lg sm:h-auto sm:rounded-xl
+                sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
+                border border-yellow-500 shadow-xl overflow-y-auto
+              "
         >
         <DialogHeader >
             <DialogTitle className="text-2xl font-bold text-yellow-600 w-full text-center">
