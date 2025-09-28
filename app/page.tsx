@@ -6,6 +6,7 @@ import SpeakersSection from "@/components/section/speakers"
 import Hospedaje from "@/components/section/hotels"
 import InscripcionSection from "@/components/section/InscripcionSection"
 import Footer from "@/components/section/footer"
+import GalaEvent from "@/components/section/gala"
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -13,6 +14,7 @@ export default function Home() {
   const section2Ref = useRef<HTMLDivElement>(null)
   const section3Ref = useRef<HTMLDivElement>(null)
   const section4Ref = useRef<HTMLDivElement>(null)
+  const section5Ref = useRef<HTMLDivElement>(null)
 
   const backgrounds = [
     {
@@ -27,6 +29,7 @@ export default function Home() {
   const [fade2, setFade2] = useState(1)
   const [fade3, setFade3] = useState(1)
   const [fade4, setFade4] = useState(1)
+  const [fade5, setFade5] = useState(1)
   const [bgSrc, setBgSrc] = useState(backgrounds[0]) // Fondo inicial
 
   useEffect(() => {
@@ -62,8 +65,15 @@ export default function Home() {
       if (section4Ref.current) {
         const rect = section4Ref.current.getBoundingClientRect()
         const opacity4 = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
-        setFade3(Math.max(0, Math.min(1, opacity4)))
+        setFade4(Math.max(0, Math.min(1, opacity4)))
         if (opacity4 > 0.5) setBgSrc(backgrounds[0])
+      }
+
+      if (section5Ref.current) {
+        const rect = section5Ref.current.getBoundingClientRect()
+        const opacity5 = 1 - Math.max(0, (winH / 2 - rect.top) / winH)
+        setFade5(Math.max(0, Math.min(1, opacity5)))
+        if (opacity5 > 0.5) setBgSrc(backgrounds[0])
       }
     }
 
@@ -128,7 +138,26 @@ export default function Home() {
             zIndex: -1,
           }}
         ></div>
-        <Activities />
+          <Activities />
+      </section>
+
+      <section
+        ref={section5Ref}
+        className="min-h-screen  relative z-20 flex flex-col justify-center items-center text-center px-6"
+        style={{
+          transform: `scale(${0.9 + fade5 * 0.1})`,
+          transition: "opacity 0.2s linear, transform 0.2s linear",
+        }}
+      >
+         <div
+          className="absolute inset-0 bg-gradient-to-b from-red-900/80 to-black/90"
+          style={{
+            opacity: 1,
+            transition: "opacity 0.05s ease-in",
+            zIndex: -1,
+          }}
+        ></div>
+          <GalaEvent />
       </section>
 
       <section
@@ -169,6 +198,8 @@ export default function Home() {
         <Hospedaje />
       </section>
 
+
+ 
 
       {/* -------- Sección lts -------- */}
       <section className="relative z-30 overflow-hidden "> 
