@@ -21,6 +21,13 @@ export default function Hospedaje() {
         "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d964.0977909335837!2d-91.5199836!3d14.8593899!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x858ea2a09634a969%3A0x6b6a821a726837be!2sHotel%20Guadalupe!5e0!3m2!1ses!2sgt!4v1756507303046!5m2!1ses!2sgt",
        link: "https://maps.app.goo.gl/HekErAekWapYMD7MA", // link embed
     },
+     {
+      nombre: "Hotel Yohana",
+      fotos: "https://drive.google.com/drive/folders/1YABAh_xkIOywtITD77maeeJW-XBLq4Ln?usp=sharing", 
+      ubicacion:
+        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d706.6859716031761!2d-91.52023747874689!3d14.858952263826763!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x858ea2a0bc2b06c3%3A0x271d11beb7e96adc!2sHotel%20Yohana!5e0!3m2!1ses!2sgt!4v1759099510379!5m2!1ses!2sgt",
+       link: "https://maps.app.goo.gl/MXYHBC6UvHtoToo36",
+    },
   ]
 
   return (
