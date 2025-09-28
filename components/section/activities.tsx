@@ -35,7 +35,7 @@ export default function Activities() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Inscribe a tu equipo
+              Registra a tu equipo
             </a>
           </Button>
 

@@ -7,6 +7,7 @@ import Hospedaje from "@/components/section/hotels"
 import InscripcionSection from "@/components/section/InscripcionSection"
 import Footer from "@/components/section/footer"
 import GalaEvent from "@/components/section/gala"
+import CTAButton from "@/components/ui/CTAbutton"
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -124,7 +125,7 @@ export default function Home() {
 
       <section
         ref={section2Ref}
-        className="min-h-screen  relative z-10 flex items-center justify-center sm:p-12 md:p-9 lg:p-6"
+        className="min-h-screen  relative z-10 flex items-center justify-center py-6 sm:p-12 md:p-9 lg:p-6"
         style={{
           transform: `scale(${0.9 + fade2 * 0.1})`,
           transition: "transform 0.1s ease-in-out",
