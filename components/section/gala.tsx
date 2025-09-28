@@ -15,18 +15,17 @@ export default function GalaEvent() {
         
         {/* Video Facebook */}
         <div className="flex-1 flex justify-center">
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl shadow-lg overflow-hidden">
-            <iframe
-              src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fmibextid%3DwwXIfr%26v%3D4305961533061827%26rdid%3DGpM0sQ0VaFMa7H0i&show_text=false&width=560"
-              width="100%"
-              height="315"
-              style={{ border: "none", overflow: "hidden" }}
-              scrolling="no"
-              frameBorder="0"
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-          </div>
+            <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl shadow-lg overflow-hidden aspect-video">
+                <iframe
+                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fmibextid%3DwwXIfr%26v%3D4305961533061827%26rdid%3DGpM0sQ0VaFMa7H0i&show_text=false&width=560&height=315"
+                    className="w-full h-full"
+                    style={{ border: "none", overflow: "hidden" }}
+                    scrolling="no"
+                    frameBorder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
+                ></iframe>
+            </div>
         </div>
 
         {/* Información */}
@@ -45,18 +44,6 @@ export default function GalaEvent() {
             👔 Código de vestimenta: Formal y elegante
           </span>
 
-          <Button
-            asChild
-            className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold px-8 py-4 text-lg rounded-md"
-          >
-            <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSdGalFormularioEjemplo/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Reserva tu lugar
-            </a>
-          </Button>
         </div>
       </div>
     </div>
