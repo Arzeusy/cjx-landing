@@ -7,10 +7,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 
 export default function InscripcionSection() {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   const handleFormSubmit = (data: FormDataType) => {
     console.log("Datos recibidos:", data);
     // 🔥 Aquí podrías enviar a Firebase / Supabase
+  };
+
+  const copyToClipboard = (text: string, label: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopied(label);
+      setTimeout(() => setCopied(null), 2500);
+    }
   };
 
   return (
@@ -64,6 +73,43 @@ export default function InscripcionSection() {
           >
             Más Información
           </Button>
+        </div>
+
+        {/* Información de cuentas para depósitos */}
+        <div className="w-full max-w-md bg-black/50 border border-yellow-500 rounded-md p-4 text-left mt-4 text-white">
+          <h3 className="text-lg font-semibold text-yellow-400 mb-2">Cuentas para depósitos</h3>
+
+          <div className="mb-3">
+            <p className="text-sm text-yellow-300 font-medium">Banco Industrial — Monetaria</p>
+            <p className="text-sm">Número de cuenta: <span className="font-mono">4130045943</span></p>
+            <p className="text-sm">A nombre de: Brandon Abraham Perez Perez</p>
+            <div className="mt-2">
+              <Button
+                size="sm"
+                className="bg-yellow-500 text-red-900 px-3 py-1 rounded-md"
+                onClick={() => copyToClipboard("4130045943", "industrial")}
+                aria-label="Copiar cuenta Banco Industrial"
+              >
+                {copied === "industrial" ? "Copiado" : "Copiar número"}
+              </Button>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm text-yellow-300 font-medium">Banco BANRURAL — Ahorro</p>
+            <p className="text-sm">Número de cuenta: <span className="font-mono">4419080213</span></p>
+            <p className="text-sm">A nombre de: Brandon Abraham Perez Perez</p>
+            <div className="mt-2">
+              <Button
+                size="sm"
+                className="bg-yellow-500 text-red-900 px-3 py-1 rounded-md"
+                onClick={() => copyToClipboard("4419080213", "banrural")}
+                aria-label="Copiar cuenta BANRURAL"
+              >
+                {copied === "banrural" ? "Copiado" : "Copiar número"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
