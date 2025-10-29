@@ -7,7 +7,6 @@ export default function CTAButton() {
     const [open, setOpen] = useState(false);
     
     const handleFormSubmit = (data: FormDataType) => {
-        console.log("Datos recibidos:", data);
         // 🔥 Aquí podrías enviar a Firebase / Supabase
     };
   return (

@@ -10,7 +10,6 @@ export default function InscripcionSection() {
   const [copied, setCopied] = useState<string | null>(null);
 
   const handleFormSubmit = (data: FormDataType) => {
-    console.log("Datos recibidos:", data);
     // 🔥 Aquí podrías enviar a Firebase / Supabase
   };
 
