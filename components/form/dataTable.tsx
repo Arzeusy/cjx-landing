@@ -18,6 +18,16 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 type Inscripcion = {
   id: number
@@ -30,43 +40,6 @@ type Inscripcion = {
   activo?: boolean | null
 }
 
-const columns: ColumnDef<Inscripcion>[] = [
-  { accessorKey: "id", header: "ID" },
-  { accessorKey: "nombre", header: "Nombre" },
-  { accessorKey: "telefono", header: "Teléfono" },
-  { accessorKey: "correo", header: "Correo" },
-  {
-    accessorKey: "acompanantes",
-    header: "Acompañantes",
-    cell: ({ row }) => row.original.acompanantes ?? "-",
-  },
-  {
-    accessorKey: "imagen_url",
-    header: "Imagen",
-    cell: ({ row }) =>
-      row.original.imagen_url ? (
-        <a
-          href={row.original.imagen_url}
-          target="_blank"
-          rel="noreferrer"
-          className="text-blue-600 underline"
-        >
-          Ver
-        </a>
-      ) : (
-        "-"
-      ),
-  },
-  {
-    accessorKey: "creado",
-    header: "Fecha",
-    cell: ({ row }) =>
-      row.original.creado
-        ? new Date(row.original.creado).toLocaleString()
-        : "-",
-  },
-]
-
 export default function DataTable({
   data,
   onView,
@@ -78,6 +51,8 @@ export default function DataTable({
 }) {
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(20)
+  const [selectedForDeactivation, setSelectedForDeactivation] = useState<Inscripcion | null>(null)
+
   // Move columns inside component so action callbacks can be used.
   const columns: ColumnDef<Inscripcion>[] = [
     { accessorKey: "id", header: "ID" },
@@ -123,7 +98,7 @@ export default function DataTable({
           <Button
             size="sm"
             variant="destructive"
-            onClick={() => onDeactivate?.(row.original.id)}
+            onClick={() => setSelectedForDeactivation(row.original)}
             disabled={row.original.activo === false}
           >
             Dar de baja
@@ -149,73 +124,102 @@ export default function DataTable({
   })
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Inscripciones ({data.length})</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+    <>
+      <AlertDialog open={!!selectedForDeactivation} onOpenChange={(open) => !open && setSelectedForDeactivation(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Confirmar dar de baja?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción dará de baja la inscripción de{" "}
+              <span className="font-medium">{selectedForDeactivation?.nombre}</span> (Ticket #{" "}
+              {selectedForDeactivation?.id}). Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                if (selectedForDeactivation && onDeactivate) {
+                  await onDeactivate(selectedForDeactivation.id)
+                  setSelectedForDeactivation(null)
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Dar de baja
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Inscripciones ({data.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
                         {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </TableCell>
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="text-center">
-                    No hay resultados.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="text-center">
+                      No hay resultados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
 
-        {/* Paginación */}
-        <div className="flex justify-between items-center mt-4">
-          <Button
-            variant="outline"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <span>
-            Página {pageIndex + 1} de {table.getPageCount()}
-          </span>
-          <Button
-            variant="outline"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+          {/* Paginación */}
+          <div className="flex justify-between items-center mt-4">
+            <Button
+              variant="outline"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Anterior
+            </Button>
+            <span>
+              Página {pageIndex + 1} de {table.getPageCount()}
+            </span>
+            <Button
+              variant="outline"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Siguiente
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </>
   )
 }
