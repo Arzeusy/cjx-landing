@@ -13,7 +13,9 @@ export interface LabeledInputProps
 
 export const LabeledInput = React.forwardRef<HTMLInputElement, LabeledInputProps>(
   ({ label, id, className, labelClassName, containerClassName, ...props }, ref) => {
-    const inputId = id || React.useId()
+    // ensure React.useId is called unconditionally
+    const generatedId = React.useId()
+    const inputId = id || generatedId
 
     return (
       <div className={containerClassName ?? "flex flex-col space-y-1"}>
