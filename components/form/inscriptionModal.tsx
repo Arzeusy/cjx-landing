@@ -42,6 +42,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
 
   // Estado para manejar vista en móvil
   const [showPreview, setShowPreview] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [ticketNumber, setTicketNumber] = useState<number>(0)
 
   const handleReset = () => {
@@ -58,6 +59,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setLoading(true)
     e.preventDefault()
     if (!formData.nombre || !formData.acompanantes || !formData.imagen) {
       toast.info("Nombre, acompañantes e imagen son obligatorios.")
@@ -76,6 +78,8 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
     } catch (err) {
       console.error(err)
       toast.error("Error al guardar la inscripción. Intenta de nuevo.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -268,6 +272,7 @@ export default function InscriptionModal({ open, setOpen, onSubmit }: Props) {
             <Button
               type="submit"
               className="w-full bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold py-2 rounded-md"
+              disabled={loading}
             >
               Enviar Inscripción
             </Button>
