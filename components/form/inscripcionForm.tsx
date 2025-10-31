@@ -58,6 +58,7 @@ export default function InscripcionForm({
   const [rotation, setRotation] = useState<number>(0)
   const [relatedInscripciones, setRelatedInscripciones] = useState<Inscripcion[]>([])
   const [originalInscription, setOriginalInscription] = useState<Inscripcion| null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [showNewCompanion, setShowNewCompanion] = useState(false)
   const [editingCompanion, setEditingCompanion] = useState<Inscripcion | null>(null)
   const [newCompanion, setNewCompanion] = useState<Partial<Inscripcion>>({
@@ -175,6 +176,16 @@ export default function InscripcionForm({
         bautizado: form.bautizado ?? null,
       }
 
+      // If a new file was selected, upload it and set imagen_url
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split(".").pop()
+        const fileName = `${Date.now()}.${fileExt}`
+        const { error: uploadError } = await supabase.storage.from("comprobantes").upload(fileName, selectedFile)
+        if (uploadError) throw uploadError
+
+        const { data: publicUrl } = supabase.storage.from("comprobantes").getPublicUrl(fileName)
+        ;(payload as any)["imagen_url"] = publicUrl.publicUrl
+      }
       const { data, error } = await supabase
         .from("inscripciones")
         .update(payload)
@@ -249,6 +260,16 @@ export default function InscripcionForm({
             ) : (
               <div className="text-sm text-gray-600">No hay imagen</div>
             )}
+            <div className="mt-2">
+              <label className="text-sm font-medium">Subir nueva imagen (opcional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
+                className="block mt-2"
+              />
+              {selectedFile && <div className="text-xs text-muted-foreground mt-1">Archivo: {selectedFile.name}</div>}
+            </div>
           </div>
 
           {/* Formulario 2/3 (shared fields) */}

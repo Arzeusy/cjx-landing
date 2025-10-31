@@ -49,9 +49,15 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
     bautizado: false,
   })
   const [saving, setSaving] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
 
   const handleChange = (key: string, value: any) => {
     setForm((p) => ({ ...p, [key]: value }))
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files && e.target.files[0]
+    setFile(f ?? null)
   }
 
   const handleSave = async () => {
@@ -74,6 +80,16 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
         bautizado: form.bautizado ?? false,
       }
 
+      // If a file was selected, upload it to Supabase Storage and attach public url
+      if (file) {
+        const fileExt = file.name.split(".").pop()
+        const fileName = `${Date.now()}.${fileExt}`
+        const { error: uploadError } = await supabase.storage.from("comprobantes").upload(fileName, file)
+        if (uploadError) throw uploadError
+
+        const { data: publicUrl } = supabase.storage.from("comprobantes").getPublicUrl(fileName)
+        ;(payload as any)["imagen_url"] = publicUrl.publicUrl
+      }
       const { data, error } = await supabase.from("inscripciones").insert([payload]).select("*").single()
       if (error) throw error
       toast.success("Inscripción creada")
@@ -96,6 +112,17 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
 
         <div className="p-2">
           <InscripcionFields value={form} onChange={handleChange} />
+
+          <div className="mt-3">
+            <label className="text-sm font-medium">Comprobante (imagen)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block mt-2"
+            />
+            {file && <div className="text-xs text-muted-foreground mt-1">Archivo seleccionado: {file.name}</div>}
+          </div>
 
           <div className="flex gap-2 mt-4">
             <Button onClick={handleSave} disabled={saving} className="bg-yellow-500 text-red-900">

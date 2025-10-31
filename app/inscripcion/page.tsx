@@ -105,13 +105,18 @@ export default function InscripcionPage() {
     }
   }
 
-  async function searchInscripciones() {
+  async function searchInscripciones(filters?: { ticket?: string; telefono?: string; correo?: string }) {
     setLoading(true)
     try {
+      // allow callers to pass explicit filter values (useful when clearing inputs)
+      const ticketVal = filters?.ticket ?? ticket
+      const telefonoVal = filters?.telefono ?? telefono
+      const correoVal = filters?.correo ?? correo
+
       let query = supabase.from("inscripciones").select("*")
 
-      if (ticket) {
-        const idNum = Number(ticket)
+      if (ticketVal) {
+        const idNum = Number(ticketVal)
         if (!Number.isNaN(idNum)) query = query.eq("id", idNum)
         else {
           toast.error("El ticket debe ser un número")
@@ -119,10 +124,10 @@ export default function InscripcionPage() {
           return
         }
       }
-      if (telefono) query = query.ilike("telefono", `%${telefono}%`)
-      if (correo) query = query.ilike("correo", `%${correo}%`)
+      if (telefonoVal) query = query.ilike("telefono", `%${telefonoVal}%`)
+      if (correoVal) query = query.ilike("correo", `%${correoVal}%`)
 
-      const { data, error } = await query.order("id", { ascending: false }).limit(500).eq("activo", true  )
+      const { data, error } = await query.order("id", { ascending: false }).limit(500).eq("activo", true)
       if (error) throw error
       setResults((data as Inscripcion[]) || [])
     } catch (err: any) {
@@ -173,28 +178,30 @@ export default function InscripcionPage() {
     <div className="min-h-screen bg-card p-6">
       <nav className="bg-cyan-950 shadow rounded-lg p-4 flex items-center justify-between">
         <form onSubmit={handleLogin} className="flex items-center gap-2">
-          <Input
-            placeholder="Correo"
-            type="email"
-            value={user}
-            onChange={(e) => setUser(e.target.value)}
-            className="w-40"
-          />
-          <Input
-            placeholder="Contraseña"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-32"
-          />
           {!authenticated ? (
-            <Button 
-              type="submit" 
-              className="bg-yellow-500 text-red-900 hover:bg-yellow-600"
-              disabled={loadingSession}
-            >
-              {loadingSession ? "Entrando..." : "Entrar"}
-            </Button>
+            <>
+              <Input
+                placeholder="Correo"
+                type="email"
+                value={user}
+                onChange={(e) => setUser(e.target.value)}
+                className="w-40"
+              />
+              <Input
+                placeholder="Contraseña"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-32"
+              />
+              <Button 
+                type="submit" 
+                className="bg-yellow-500 text-red-900 hover:bg-yellow-600"
+                disabled={loadingSession}
+              >
+                {loadingSession ? "Entrando..." : "Entrar"}
+              </Button>
+          </>
           ) : (
             <Button type="button" variant="secondary" onClick={handleLogout} disabled={loadingSession}>
               {loadingSession ? "Cerrando..." : "Salir"}
@@ -219,64 +226,66 @@ export default function InscripcionPage() {
           <div className="space-y-6">
             {/* Filtros */}
             <Card>
-              <CardHeader>
-                <CardTitle>Filtros de búsqueda</CardTitle>
-                <CardDescription>
-                  Usa uno o más filtros para refinar los resultados
-                </CardDescription>
-              </CardHeader>
+             
               <CardContent>
-                <div className="grid sm:grid-cols-4 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <Label>Ticket (ID)</Label>
-                    <Input
-                      value={ticket}
-                      onChange={(e) => setTicket(e.target.value)}
-                      placeholder="Ej: 123"
-                    />
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    searchInscripciones()
+                  }}
+                >
+                  <div className="grid sm:grid-cols-4 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <Label>Ticket (ID)</Label>
+                      <Input
+                        value={ticket}
+                        onChange={(e) => setTicket(e.target.value)}
+                        placeholder="Ej: 123"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label>Teléfono</Label>
+                      <Input
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value)}
+                        placeholder="Ej: 502 1234 5678"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label>Correo</Label>
+                      <Input
+                        value={correo}
+                        onChange={(e) => setCorreo(e.target.value)}
+                        placeholder="Ej: correo@email.com"
+                      />
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <Button type="submit" className="bg-yellow-500 text-red-900 hover:bg-yellow-600">
+                        {loading ? "Buscando..." : "Buscar"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          // clear inputs and immediately run search with cleared values
+                          setTicket("")
+                          setTelefono("")
+                          setCorreo("")
+                          searchInscripciones({ ticket: "", telefono: "", correo: "" })
+                        }}
+                      >
+                        Limpiar
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => setShowCreate(true)}
+                        className="bg-green-600 text-white hover:bg-green-700"
+                      >
+                        Inscribir
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <Label>Teléfono</Label>
-                    <Input
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value)}
-                      placeholder="Ej: 502 1234 5678"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <Label>Correo</Label>
-                    <Input
-                      value={correo}
-                      onChange={(e) => setCorreo(e.target.value)}
-                      placeholder="Ej: correo@email.com"
-                    />
-                  </div>
-                  <div className="flex items-end gap-2">
-                    <Button
-                      onClick={() => searchInscripciones()}
-                      className="bg-yellow-500 text-red-900 hover:bg-yellow-600"
-                    >
-                      {loading ? "Buscando..." : "Buscar"}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setTicket("")
-                        setTelefono("")
-                        setCorreo("")
-                        searchInscripciones()
-                      }}
-                    >
-                      Limpiar
-                    </Button>
-                    <Button
-                      onClick={() => setShowCreate(true)}
-                      className="bg-green-600 text-white hover:bg-green-700"
-                    >
-                      Inscribir
-                    </Button>
-                  </div>
-                </div>
+                </form>
               </CardContent>
             </Card>
 

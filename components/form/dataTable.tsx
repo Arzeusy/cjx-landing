@@ -50,7 +50,7 @@ export default function DataTable({
   onDeactivate?: (id: number) => Promise<void>
 }) {
   const [pageIndex, setPageIndex] = useState(0)
-  const [pageSize, setPageSize] = useState(20)
+  const [pageSize, setPageSize] = useState(10)
   const [selectedForDeactivation, setSelectedForDeactivation] = useState<Inscripcion | null>(null)
 
   // Move columns inside component so action callbacks can be used.
