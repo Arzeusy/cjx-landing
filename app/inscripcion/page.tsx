@@ -49,27 +49,60 @@ export default function InscripcionPage() {
 
   const [results, setResults] = useState<Inscripcion[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingSession, setLoadingSession] = useState(false)
   const [selected, setSelected] = useState<Inscripcion | null>(null)
   const [showCreate, setShowCreate] = useState(false)
 
-  const ADMIN_USER = "admin"
-  const ADMIN_PASS = "admin123"
+  useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session }}) => {
+      setAuthenticated(!!session)
+    })
 
-  const handleLogin = (e?: React.FormEvent) => {
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthenticated(!!session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogin = async (e?: React.FormEvent) => {
     e?.preventDefault()
-    if (user === ADMIN_USER && password === ADMIN_PASS) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: user,
+        password: password,
+      })
+
+      if (error) {
+        throw error
+      }
+
       setAuthenticated(true)
       toast.success("Autenticado")
-    } else {
-      toast.error("Credenciales incorrectas")
+    } catch (err: any) {
+      console.error(err)
+      toast.error(err.message || "Error al iniciar sesión")
     }
   }
 
-  const handleLogout = () => {
-    setAuthenticated(false)
-    setUser("")
-    setPassword("")
-    setResults([])
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+
+      setAuthenticated(false)
+      setUser("")
+      setPassword("")
+      setResults([])
+      toast.success("Sesión cerrada")
+    } catch (err: any) {
+      console.error(err)
+      toast.error("Error al cerrar sesión")
+    }
   }
 
   async function searchInscripciones() {
@@ -141,10 +174,11 @@ export default function InscripcionPage() {
       <nav className="bg-cyan-950 shadow rounded-lg p-4 flex items-center justify-between">
         <form onSubmit={handleLogin} className="flex items-center gap-2">
           <Input
-            placeholder="Usuario"
+            placeholder="Correo"
+            type="email"
             value={user}
             onChange={(e) => setUser(e.target.value)}
-            className="w-32"
+            className="w-40"
           />
           <Input
             placeholder="Contraseña"
@@ -154,12 +188,16 @@ export default function InscripcionPage() {
             className="w-32"
           />
           {!authenticated ? (
-            <Button type="submit" className="bg-yellow-500 text-red-900 hover:bg-yellow-600">
-              Entrar
+            <Button 
+              type="submit" 
+              className="bg-yellow-500 text-red-900 hover:bg-yellow-600"
+              disabled={loadingSession}
+            >
+              {loadingSession ? "Entrando..." : "Entrar"}
             </Button>
           ) : (
-            <Button type="button" variant="secondary" onClick={handleLogout}>
-              Salir
+            <Button type="button" variant="secondary" onClick={handleLogout} disabled={loadingSession}>
+              {loadingSession ? "Cerrando..." : "Salir"}
             </Button>
           )}
         </form>
