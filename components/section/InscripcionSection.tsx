@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import InscriptionModal, { FormDataType } from "@/components/form/inscriptionModal";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function InscripcionSection() {
   const [open, setOpen] = useState(false);

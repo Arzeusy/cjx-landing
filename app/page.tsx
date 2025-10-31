@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import Activities from "@/components/section/activities"
 import SpeakersSection from "@/components/section/speakers"
 import Hospedaje from "@/components/section/hotels"
 import InscripcionSection from "@/components/section/InscripcionSection"
 import Footer from "@/components/section/footer"
 import GalaEvent from "@/components/section/gala"
-import CTAButton from "@/components/ui/CTAbutton"
+// import CTAButton from "@/components/ui/CTAbutton"
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -34,8 +35,6 @@ export default function Home() {
   const [bgSrc, setBgSrc] = useState(backgrounds[0]) // Fondo inicial
 
   useEffect(() => {
-    
-    
     const handleScroll = () => {
       const winH = window.innerHeight
 
@@ -81,7 +80,7 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll()
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [backgrounds])
 
   return (
     <main className="w-full relative">
@@ -91,11 +90,14 @@ export default function Home() {
         ref={heroRef}
         className="fixed inset-0 z-0 w-screen h-min-screen"
       >
-        <img
+        <Image
           src="/Arte-Corona.svg"
           alt="Hero Background"
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2
           -translate-y-1/2 opacity-20 object-cover sm:object-contain w-full h-full"
+          width={1920}
+          height={1080}
+          priority
         />
       </div>
       

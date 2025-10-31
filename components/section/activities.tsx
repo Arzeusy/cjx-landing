@@ -1,6 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "../ui/button"
+import Image from "next/image"
 
 export default function Activities() {
 
@@ -43,10 +44,12 @@ export default function Activities() {
 
         {/* Imagen */}
         <div className="flex-1 flex justify-center md:text-center">
-          <img 
+          <Image 
             src="/bibliaton.jpeg" 
             alt="Súper Bibliatón" 
             className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl shadow-lg object-cover"
+            width={800}
+            height={600}
           />
         </div>
       </div>

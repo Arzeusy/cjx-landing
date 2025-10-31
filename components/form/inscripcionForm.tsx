@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import { supabase } from "@/lib/supabase/supabaseClient"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -57,7 +58,7 @@ export default function InscripcionForm({
   const [saving, setSaving] = useState(false)
   const [rotation, setRotation] = useState<number>(0)
   const [relatedInscripciones, setRelatedInscripciones] = useState<Inscripcion[]>([])
-  const [originalInscription, setOriginalInscription] = useState<Inscripcion| null>(null)
+  const [_, setOriginalInscription] = useState<Inscripcion| null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [showNewCompanion, setShowNewCompanion] = useState(false)
   const [editingCompanion, setEditingCompanion] = useState<Inscripcion | null>(null)
@@ -74,12 +75,12 @@ export default function InscripcionForm({
   })
 
   // use loose key typing so this function is compatible with the generic InscripcionFields component
-  const handleChange = (key: string, value: any) => {
-    setForm((prev) => ({ ...(prev as any), [key]: value } as Inscripcion))
+  const handleChange = (key: keyof Inscripcion, value: Inscripcion[keyof Inscripcion]) => {
+    setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  const handleCompanionChange = (key: string, value: any) => {
-    setNewCompanion((prev) => ({ ...(prev as any), [key]: value }))
+  const handleCompanionChange = (key: keyof Inscripcion, value: Inscripcion[keyof Inscripcion]) => {
+    setNewCompanion((prev) => ({ ...prev, [key]: value }))
   }
 
   // Cargar inscripciones relacionadas al montar o cambiar ID
@@ -92,7 +93,7 @@ export default function InscripcionForm({
           .eq("acompanante_de", form.id)
         if (error1) throw error1
 
-        let origen: Inscripcion[] = []
+        // const origen: Inscripcion[] = []
         if (form.acompanante_de) {
           const { data: origenData, error: error2 } = await supabase
             .from("inscripciones")
@@ -117,7 +118,7 @@ export default function InscripcionForm({
 
   const handleSaveCompanion = async () => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("inscripciones")
         .insert([
           {
@@ -184,7 +185,7 @@ export default function InscripcionForm({
         if (uploadError) throw uploadError
 
         const { data: publicUrl } = supabase.storage.from("comprobantes").getPublicUrl(fileName)
-        ;(payload as any)["imagen_url"] = publicUrl.publicUrl
+        ;(payload as Partial<Inscripcion>).imagen_url = publicUrl.publicUrl
       }
       const { data, error } = await supabase
         .from("inscripciones")
@@ -203,18 +204,13 @@ export default function InscripcionForm({
     }
   }
 
-  const montoCalculado =
-    form.monto && form.monto > 0
-      ? form.monto
-      : 150 * ((Number(form.acompanantes) || 0) + 1)
+    const handleAvaliableCompanions = () => {
+      if (form.acompanante_de) return false
+      if (!form.acompanantes || form.acompanantes <= 0) return false
+      const actuales = relatedInscripciones.length
+      return actuales < form.acompanantes
 
-  const handleAvaliableCompanions = () => {
-    if (form.acompanante_de) return false
-    if (!form.acompanantes || form.acompanantes <= 0) return false
-    const actuales = relatedInscripciones.length
-    return actuales < form.acompanantes
-
-  }
+    }
 
   return (
     <Card>
@@ -230,10 +226,12 @@ export default function InscripcionForm({
             {form.imagen_url ? (
               <Dialog>
                 <DialogTrigger asChild>
-                  <img
-                    src={form.imagen_url}
+                  <Image
+                    src={form.imagen_url ?? ""}
                     alt={`img-${form.id}`}
                     className="max-w-full max-h-96 rounded cursor-pointer hover:opacity-90 transition"
+                    width={800}
+                    height={600}
                   />
                 </DialogTrigger>
                 <DialogContent className="max-w-3xl">
@@ -241,11 +239,13 @@ export default function InscripcionForm({
                     <DialogTitle>Imagen ampliada</DialogTitle>
                   </DialogHeader>
                   <div className="flex flex-col items-center gap-3">
-                    <img
-                      src={form.imagen_url}
+                    <Image
+                      src={form.imagen_url ?? ""}
                       alt={`img-${form.id}`}
                       className="max-h-[80vh] rounded transition-transform"
                       style={{ transform: `rotate(${rotation}deg)` }}
+                      width={1200}
+                      height={800}
                     />
                     <Button
                       type="button"

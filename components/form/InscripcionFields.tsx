@@ -1,17 +1,17 @@
 "use client"
 
 import React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { LabeledInput } from "@/components/ui/labelInput"
 import { Switch } from "@/components/ui/switch"
 
-type Inscripcion = Record<string, any>
+import { Inscripcion } from "@/types/inscripcion"
 
 interface Props {
-  value: Record<string, any>
-  onChange: (key: string, value: any) => void
+  value: Partial<Inscripcion>
+  onChange: (key: keyof Inscripcion, value: Inscripcion[keyof Inscripcion]) => void
   disabled?: Record<string, boolean>
   className?: string
 }
@@ -117,7 +117,7 @@ export default function InscripcionFields({ value, onChange, disabled, className
           />
           <Label htmlFor="bautizado">Bautizado</Label>
         </div>
-       { value.id < 1 && ( 
+       { (value.id ?? 0) < 1 && ( 
             <div className="flex items-center gap-2">
             <input
                 id="activo"

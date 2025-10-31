@@ -14,6 +14,17 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  images: {
+    // Allow loading images from Supabase Storage public bucket host
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "eabdujymuudmoyuopddk.supabase.co",
+        port: "",
+        pathname: "/storage/v1/**",
+      },
+    ],
+  },
 }
 
 export default nextConfig

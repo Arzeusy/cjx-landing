@@ -27,13 +27,6 @@ const TicketPreview: React.FC<TicketProps> = ({
   isGenerated = false,
   handleReset,
 }) => {
-  // Fecha actual formateada
-  const currentDate = new Date().toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-
   const displayTicketNumber = isGenerated ? ticketNumber : "XXXX";
   const ticketRef = useRef<HTMLDivElement>(null);
   

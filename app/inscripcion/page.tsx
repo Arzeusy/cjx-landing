@@ -18,25 +18,7 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 
-type Inscripcion = {
-  id: number
-  nombre?: string
-  idc?: string | null
-  ubicacion?: string | null
-  telefono?: string
-  correo?: string
-  edad?: number | null
-  acompanantes?: number | null
-  imagen_url?: string | null
-  creado?: string
-  genero?: string | null
-  tipo_pago?: string | null
-  monto?: number | null
-  pago_confirmado?: boolean | null
-  acompanante_de?: number | null
-  activo?: boolean | null
-  bautizado?: boolean | null
-}
+import { Inscripcion } from "@/types/inscripcion"
 
 export default function InscripcionPage() {
   const [user, setUser] = useState("")
@@ -49,7 +31,7 @@ export default function InscripcionPage() {
 
   const [results, setResults] = useState<Inscripcion[]>([])
   const [loading, setLoading] = useState(false)
-  const [loadingSession, setLoadingSession] = useState(false)
+  const [loadingSession] = useState(false)
   const [selected, setSelected] = useState<Inscripcion | null>(null)
   const [showCreate, setShowCreate] = useState(false)
 
@@ -67,7 +49,7 @@ export default function InscripcionPage() {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, []) // Auth state check only needs to run once on mount
 
   const handleLogin = async (e?: React.FormEvent) => {
     e?.preventDefault()
@@ -83,9 +65,9 @@ export default function InscripcionPage() {
 
       setAuthenticated(true)
       toast.success("Autenticado")
-    } catch (err: any) {
+    } catch (err: Error | unknown) {
       console.error(err)
-      toast.error(err.message || "Error al iniciar sesión")
+      toast.error(err instanceof Error ? err.message : "Error al iniciar sesión")
     }
   }
 
@@ -99,7 +81,7 @@ export default function InscripcionPage() {
       setPassword("")
       setResults([])
       toast.success("Sesión cerrada")
-    } catch (err: any) {
+    } catch (err: Error | unknown) {
       console.error(err)
       toast.error("Error al cerrar sesión")
     }
@@ -130,7 +112,7 @@ export default function InscripcionPage() {
       const { data, error } = await query.order("id", { ascending: false }).limit(500).eq("activo", true)
       if (error) throw error
       setResults((data as Inscripcion[]) || [])
-    } catch (err: any) {
+    } catch (err: Error | unknown) {
       console.error(err)
       toast.error("Error al buscar inscripciones")
     } finally {
@@ -172,7 +154,7 @@ export default function InscripcionPage() {
     if (authenticated && !ticket && !telefono && !correo) {
       searchInscripciones()
     }
-  }, [authenticated])
+  }, [authenticated, ticket, telefono, correo])
 
   return (
     <div className="min-h-screen bg-card p-6">
@@ -298,7 +280,7 @@ export default function InscripcionPage() {
                   open={showCreate}
                   onClose={() => setShowCreate(false)}
                   onCreated={(ins) => {
-                    setResults((prev) => [ins as any, ...prev])
+                    setResults((prev) => [ins, ...prev])
                   }}
                 />
               </>

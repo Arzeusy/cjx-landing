@@ -7,24 +7,7 @@ import { toast } from "sonner"
 import InscripcionFields from "@/components/form/InscripcionFields"
 import { supabase } from "@/lib/supabase/supabaseClient"
 
-type Inscripcion = {
-  id?: number
-  nombre?: string
-  idc?: string | null
-  ubicacion?: string | null
-  telefono?: string
-  correo?: string
-  edad?: number | null
-  acompanantes?: number | null
-  imagen_url?: string | null
-  genero?: string | null
-  tipo_pago?: string | null
-  monto?: number | null
-  pago_confirmado?: boolean | null
-  acompanante_de?: number | null
-  activo?: boolean | null
-  bautizado?: boolean | null
-}
+import { Inscripcion } from "@/types/inscripcion"
 
 interface Props {
   open: boolean
@@ -51,7 +34,7 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
   const [saving, setSaving] = useState(false)
   const [file, setFile] = useState<File | null>(null)
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: keyof Inscripcion, value: Inscripcion[keyof Inscripcion]) => {
     setForm((p) => ({ ...p, [key]: value }))
   }
 
@@ -88,7 +71,7 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
         if (uploadError) throw uploadError
 
         const { data: publicUrl } = supabase.storage.from("comprobantes").getPublicUrl(fileName)
-        ;(payload as any)["imagen_url"] = publicUrl.publicUrl
+        ;(payload as Partial<Inscripcion>).imagen_url = publicUrl.publicUrl
       }
       const { data, error } = await supabase.from("inscripciones").insert([payload]).select("*").single()
       if (error) throw error
