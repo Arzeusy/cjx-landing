@@ -57,7 +57,7 @@ export default function AcompanantesSection({
           <div className="flex items-center justify-between py-2 font-medium">
             <AccordionTrigger className="flex-1 text-left">
               <div className="flex flex-col">
-                <span>{relatedInscripciones[0].nombre ?? "Sin nombre"} - Ticket # {relatedInscripciones[0].id}</span>
+                Acompañantes
               </div>
             </AccordionTrigger>
 
@@ -90,6 +90,8 @@ export default function AcompanantesSection({
             <div className="space-y-2 pt-2">
               {relatedInscripciones.map((ins) => (
                 <div key={ins.id} className="flex items-center justify-between p-2 border rounded">
+                  <div className="font-medium"><b className="text-yellow-600">Ticket:</b> {ins.id}</div>
+                  <div className="font-medium"><b className="text-yellow-600">Nombre:</b> {ins.nombre}</div>
                   <div className="font-medium"><b className="text-yellow-600">Edad:</b> {ins.edad}</div>
                   <div className="font-medium"><b className="text-yellow-600">Teléfono:</b> {ins.telefono != null ? ins.telefono : "Sin telefono"}</div>
                   <div className="font-medium"><b className="text-yellow-600">Correo:</b> {ins.correo != null ? ins.correo : "Sin correo"}</div>
