@@ -18,7 +18,7 @@ interface Props {
 
 export default function InscripcionFields({ value, onChange, disabled, className }: Props) {
   const montoCalculado = 150 * ((Number(value.acompanantes) || 0) + 1)
-  const montoMostrado = value.monto !== null && value.monto !== undefined ? value.monto : montoCalculado
+  const montoMostrado = value.monto !== null && value.monto !== undefined ? value.monto.toString() : montoCalculado.toString()
 
   return (
     <div className={className}>
@@ -53,14 +53,34 @@ export default function InscripcionFields({ value, onChange, disabled, className
         <LabeledInput
           type="number"
           label="Edad"
-          value={value.edad ?? ""}
-          onChange={(e) => onChange("edad", e.target.value ? Number(e.target.value) : null)}
+          value={value.edad !== null && value.edad !== undefined ? value.edad.toString() : ""}
+          onChange={(e) => {
+            const inputValue = e.target.value
+            if (inputValue === "" || inputValue === null) {
+              onChange("edad", null)
+            } else {
+              const numericValue = Number(inputValue)
+              if (!isNaN(numericValue)) {
+                onChange("edad", numericValue)
+              }
+            }
+          }}
         />
         <LabeledInput
           type="number"
           label="Acompañantes"
-          value={value.acompanantes ?? ""}
-          onChange={(e) => onChange("acompanantes", e.target.value ? Number(e.target.value) : null)}
+          value={value.acompanantes !== null && value.acompanantes !== undefined ? value.acompanantes.toString() : ""}
+          onChange={(e) => {
+            const inputValue = e.target.value
+            if (inputValue === "" || inputValue === null) {
+              onChange("acompanantes", null)
+            } else {
+              const numericValue = Number(inputValue)
+              if (!isNaN(numericValue)) {
+                onChange("acompanantes", numericValue)
+              }
+            }
+          }}
           disabled={!!disabled?.acompanantes}
         />
 
@@ -96,8 +116,15 @@ export default function InscripcionFields({ value, onChange, disabled, className
           label="Monto"
           value={montoMostrado}
           onChange={(e) => {
-            const newValue = e.target.value ? Number(e.target.value) : null
-            onChange("monto", newValue)
+            const inputValue = e.target.value
+            if (inputValue === "" || inputValue === null) {
+              onChange("monto", null)
+            } else {
+              const numericValue = Number(inputValue)
+              if (!isNaN(numericValue)) {
+                onChange("monto", numericValue)
+              }
+            }
           }}
           disabled={!!disabled?.monto}
           placeholder={`Sugerido: ${montoCalculado}`}

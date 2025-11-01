@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -34,7 +34,12 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
   const [saving, setSaving] = useState(false)
   const [file, setFile] = useState<File | null>(null)
 
+  useEffect(() => {
+    console.log("Form state changed:", form)
+  }, [form])
+
   const handleChange = (key: keyof Inscripcion, value: Inscripcion[keyof Inscripcion]) => {
+    console.log(`Changing ${key} to:`, value, typeof value)
     setForm((p) => ({ ...p, [key]: value }))
   }
 
