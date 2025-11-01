@@ -17,10 +17,8 @@ interface Props {
 }
 
 export default function InscripcionFields({ value, onChange, disabled, className }: Props) {
-  const montoCalculado =
-    value.monto && value.monto > 0
-      ? value.monto
-      : 150 * ((Number(value.acompanantes) || 0) + 1)
+  const montoCalculado = 150 * ((Number(value.acompanantes) || 0) + 1)
+  const montoMostrado = value.monto !== null && value.monto !== undefined ? value.monto : montoCalculado
 
   return (
     <div className={className}>
@@ -96,9 +94,13 @@ export default function InscripcionFields({ value, onChange, disabled, className
         <LabeledInput
           type="number"
           label="Monto"
-          value={montoCalculado}
-          onChange={(e) => onChange("monto", e.target.value ? Number(e.target.value) : null)}
+          value={montoMostrado}
+          onChange={(e) => {
+            const newValue = e.target.value ? Number(e.target.value) : null
+            onChange("monto", newValue)
+          }}
           disabled={!!disabled?.monto}
+          placeholder={`Sugerido: ${montoCalculado}`}
         />
 
         <div className="flex items-center gap-2">

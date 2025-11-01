@@ -56,12 +56,15 @@ export default function CreateInscripcion({ open, onClose, onCreated }: Props) {
         acompanantes: form.acompanantes ?? null,
         genero: form.genero ?? null,
         tipo_pago: form.tipo_pago ?? null,
-        monto: form.monto ?? null,
+        monto: form.monto !== null && form.monto !== undefined ? form.monto : 150 * ((form.acompanantes || 0) + 1),
         pago_confirmado: form.pago_confirmado ?? null,
         acompanante_de: form.acompanante_de ?? null,
         activo: form.activo ?? true,
         bautizado: form.bautizado ?? false,
       }
+
+      console.log("Form data before save:", form)
+      console.log("Payload to be saved:", payload)
 
       // If a file was selected, upload it to Supabase Storage and attach public url
       if (file) {
