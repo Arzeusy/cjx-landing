@@ -27,6 +27,7 @@ export default function Home() {
     },
   ]
   
+  const [mounted, setMounted] = useState(false)
   const [fadeI, setFadeI] = useState(1)
   const [fade2, setFade2] = useState(1)
   const [fade3, setFade3] = useState(1)
@@ -35,7 +36,14 @@ export default function Home() {
   const [bgSrc, setBgSrc] = useState(backgrounds[0]) // Fondo inicial
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+    
     const handleScroll = () => {
+      if (typeof window === 'undefined') return
       const winH = window.innerHeight
 
       // Fade sección inter
@@ -77,10 +85,12 @@ export default function Home() {
       }
     }
 
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [backgrounds])
+    if (typeof window !== 'undefined') {
+      window.addEventListener("scroll", handleScroll, { passive: true })
+      handleScroll()
+      return () => window.removeEventListener("scroll", handleScroll)
+    }
+  }, [backgrounds, mounted])
 
   return (
     <main className="w-full relative">

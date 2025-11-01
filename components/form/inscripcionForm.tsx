@@ -91,6 +91,7 @@ export default function InscripcionForm({
           .from("inscripciones")
           .select("*")
           .eq("acompanante_de", form.id)
+          .eq("activo", true)
         if (error1) throw error1
 
         // const origen: Inscripcion[] = []
